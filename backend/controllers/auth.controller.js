@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {sendWelcomeEmail} from "../emails/emailHandlers.js";
 
 export const signup = async (req, res) => {
     try {
@@ -46,7 +47,13 @@ export const signup = async (req, res) => {
 
         res.status(201).json({ message: "User created successfully" })
 
-        //todo: send welcome email
+        const profileUrl = process.env.CLIENT_URL + "/profile/" + user.username
+
+        try {
+            await sendWelcomeEmail(user.email, user.name, profileUrl)
+        } catch (emailError) {
+            console.error("Error in sendWelcomeEmail: ", emailError.message)
+        }
     } catch (error) {
         console.log("Error in signup controller: ", error.message)
         res.status(500).json({ message: "Internal Server Error" })
