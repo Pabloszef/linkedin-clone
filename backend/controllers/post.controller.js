@@ -1,6 +1,7 @@
 import Post from "../models/post.model.js";
 import cloudinary from "../lib/cloudinary.js";
 import Notification from "../models/notification.model.js";
+import {sendCommentNotificationEmail} from "../emails/emailHandlers.js";
 
 export const getFeedPosts = async (req, res) => {
     try {
@@ -106,12 +107,52 @@ export const createComment = async (req, res) => {
             })
 
             await newNotification.save()
-            // todo: send email
+
+            try {
+                const postUrl = process.env.CLIENT_URL + "/post/" + postId
+                await sendCommentNotificationEmail(post.author.email, post.author.name, req.user.name, postUrl, content)
+            } catch (error) {
+                console.error("Error in sending comment notification email: ", error.message)
+                res.status(500).json({ message: "Internal Server Error" })
+            }
         }
 
         res.status(200).json(post)
     } catch (error) {
         console.error("Error in createComment controller: ", error.message)
         res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+export const likePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        const userId = req.user._id
+
+        if (post.likes.includes(userId)) {
+            // unlike the post
+            post.likes = post.likes.filter((id) => id.toString() !== userId.toString())
+        } else {
+            // like the post
+            post.likes.push(userId)
+            // create a notification if the post owner is not the user who liked
+            if (post.author.toString() !== userId.toString()) {
+                const newNotification = new Notification({
+                    recipient: post.author,
+                    type: "like",
+                    relatedUser: userId,
+                    relatedPost: postId,
+                })
+
+                await newNotification.save()
+            }
+        }
+
+        await post.save()
+
+        res.status(200).json(post)
+    } catch (error) {
+
     }
 }
