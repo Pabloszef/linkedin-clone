@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "../../lib/axios.js";
 import toast from "react-hot-toast";
 import {Loader} from "lucide-react";
@@ -9,6 +9,7 @@ const SignUpForm = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const queryClient = useQueryClient()
 
     const { mutate: signUpMutation, isPending } = useMutation({
         mutationFn: async (data) => {
@@ -17,6 +18,7 @@ const SignUpForm = () => {
         },
         onSuccess: () => {
             toast.success("Account created successfully")
+            queryClient.invalidateQueries({queryKey: ["authUser"]})
         },
         onError: (error) => {
             toast.error(error.response.data.message || "Something went wrong")
