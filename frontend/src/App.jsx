@@ -6,7 +6,6 @@ import LoginPage from "./pages/auth/LoginPage.jsx";
 import toast, {Toaster} from "react-hot-toast";
 import {useQuery} from "@tanstack/react-query";
 import {axiosInstance} from "./lib/axios.js";
-import {Dot, DotSquare, Loader2, LucideLoader,} from "lucide-react";
 
 function App() {
     const {data: authUser, isPending} = useQuery({
