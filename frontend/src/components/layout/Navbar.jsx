@@ -9,7 +9,7 @@ const Navbar = () => {
 
 	const { data: notifications } = useQuery({
 		queryKey: ["notifications"],
-		queryFn: async () => axiosInstance.get("/notifications"),
+		queryFn: async () => axiosInstance.get("/notifications/"),
 		enabled: !!authUser,
 	});
 
@@ -42,11 +42,11 @@ const Navbar = () => {
 						{authUser ? (
 							<>
 								<Link to={"/"} className='text-neutral flex flex-col items-center'>
-									<Home size={20} />
+									<Home size={20} className="hover:scale-110 hover:text-primary transition-all duration-300"/>
 									<span className='text-xs hidden md:block'>Home</span>
 								</Link>
 								<Link to='/network' className='text-neutral flex flex-col items-center relative'>
-									<Users size={20} />
+									<Users size={20} className="hover:scale-110 hover:text-primary transition-all duration-300"/>
 									<span className='text-xs hidden md:block'>My Network</span>
 									{unreadConnectionRequestsCount > 0 && (
 										<span
@@ -58,7 +58,7 @@ const Navbar = () => {
 									)}
 								</Link>
 								<Link to='/notifications' className='text-neutral flex flex-col items-center relative'>
-									<Bell size={20} />
+									<Bell size={20} className="hover:scale-110 hover:text-primary transition-all duration-300"/>
 									<span className='text-xs hidden md:block'>Notifications</span>
 									{unreadNotificationCount > 0 && (
 										<span
@@ -73,7 +73,7 @@ const Navbar = () => {
 									to={`/profile/${authUser.username}`}
 									className='text-neutral flex flex-col items-center'
 								>
-									<User size={20} />
+									<User size={20} className="hover:scale-110 hover:text-primary transition-all duration-300"/>
 									<span className='text-xs hidden md:block'>Me</span>
 								</Link>
 								<button
