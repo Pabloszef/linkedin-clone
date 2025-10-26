@@ -3,6 +3,13 @@ import {useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "../lib/axios.js";
 
+import ProfileHeader from "../components/Profile/ProfileHeader";
+import AboutSection from "../components/Profile/AboutSection";
+import ExperienceSection from "../components/Profile/ExperienceSection";
+import EducationSection from "../components/Profile/EducationSection";
+import SkillsSection from "../components/Profile/SkillsSection";
+import toast from "react-hot-toast";
+
 const ProfilePage = () => {
     const { username } = useParams();
     const queryClient = useQueryClient();
@@ -17,11 +24,12 @@ const ProfilePage = () => {
     });
 
     const { mutate: updateProfile } = useMutation({
-        mutationFn: (updatedData) => {
-            axiosInstance.put("/users/profile", updatedData)
+        mutationFn: async (updatedData) => {
+            await axiosInstance.put("/users/profile", updatedData)
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(["authUser"])
+            toast.success("Profile updated")
+            queryClient.invalidateQueries(["userProfile", username])
         }
     })
 
