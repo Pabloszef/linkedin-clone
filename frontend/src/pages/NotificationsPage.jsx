@@ -112,11 +112,11 @@ const NotificationsPage = () => {
                         <NotificationsSkeleton />
                     ) : (
                         notifications && notifications.data.length > 0 ? (
-                            <ul className="space-y-4">
+                            <ul>
                                 {notifications.data.map((notification) => (
                                     <li
                                         key={notification._id}
-                                        className={`bg-white border rounded-lg p-4 transition-all hover:shadow-md duration-200 ${
+                                        className={`bg-white border rounded-lg p-4 my-4 transition-all hover:shadow-md duration-200 ${
                                             !notification.read ? "border-blue-500" : "border-gray-200"
                                         }`}
                                     >
